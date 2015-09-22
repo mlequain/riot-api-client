@@ -16,10 +16,10 @@ var config = {
 var apiUrl = 'https://REGION.api.pvp.net/api/lol/REGION/v1.4/summoner/by-name/SUMMONER_NAME';
 
 var riotApi = require('riot-api-client');
-  riotApi.setConfig(config);
-  riotApi.get(apiUrl, function callback(err, data){
-      //Your code here
-  });
+riotApi.setConfig(config);
+riotApi.get(apiUrl, function callback(err, data){
+    //Your code here
+});
 ```
 
 The callback always takes two parameters, an error and the data received. The error contains the status code of the failed request if there was any issue with the request and the data contains the parsed JSON that we received.
