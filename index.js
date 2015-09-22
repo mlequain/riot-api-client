@@ -7,7 +7,7 @@ var requestCount = 0;
 var timeoutCount = 0;
 var requestTimestamps = [];
 
-module.exports.get = function get(requestUrl, callback) {
+exports.get = function get(requestUrl, callback) {
     var currentTime = new Date().getTime();
     var latestTimeout = requestTimestamps[timeoutCount];
     var timeoutDuration = 0;
@@ -42,24 +42,37 @@ module.exports.get = function get(requestUrl, callback) {
     });
 };
 
+exports.static = function getStaticData(requestUrl, callback){
+    return processRequest(requestUrl, function onRequestData(err, data){
+        if(err) return callback(err);
+        return callback(null, data);
+    });
+};
+
 function processRequest(requestUrl, callback){
+    requestUrl += requestUrl.split('?')[1] ? '&' : '?';
     return request({
         method: 'GET',
         uri: requestUrl + 'api_key=' + apiKey
     }, function onData(err, response, body) {
         if(err) return callback(err);
-        if(response.statusCode != 200) return callback(new Error({ statusCode: response.statusCode}));
+        if(response.statusCode !== 200) return callback(new Error({ statusCode: response.statusCode}));
         var json = tryParse(body);
         return callback(null, json);
     });
 }
 
-exports.init = function initRiotApi(config){
+exports.init = function init(config){
     return function onInit(done){
         apiKey = config.apiKey;
         requestLimit = config.requestLimit;
         return done();
     };
+};
+
+exports.setConfig = function setConfig(config){
+    apiKey = config.apiKey;
+    requestLimit = config.requestLimit;
 };
 
 function tryParse(obj){
