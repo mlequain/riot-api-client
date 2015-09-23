@@ -24,4 +24,4 @@ riotApi.get(apiUrl, function callback(err, data){
 
 The callback always takes two parameters, an error and the data received. The error contains the status code of the failed request if there was any issue with the request and the data contains the parsed JSON that we received.
 
-Do not hesitate to create a github issue if you encounter any error
+Do not hesitate to create a github issue if you encounter any error or bug
