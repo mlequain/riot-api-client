@@ -2,6 +2,7 @@ var request = require('request');
 
 var apiKey = '';
 var requestLimit = 0;
+var TWELVE_SECONDS = 12000;
 
 var requestCount = 0;
 var timeoutCount = 0;
@@ -12,19 +13,19 @@ exports.get = function get(requestUrl, callback) {
     var latestTimeout = requestTimestamps[timeoutCount];
     var timeoutDuration = 0;
 
-    if (currentTime > (latestTimeout + 12000) && requestCount >= requestLimit && timeoutCount < requestLimit){
+    if (currentTime > (latestTimeout + TWELVE_SECONDS) && requestCount >= requestLimit && timeoutCount < requestLimit){
         requestCount--;
         requestTimestamps.splice(timeoutCount, (timeoutCount + 1));
     }
     if (requestCount >= requestLimit && timeoutCount >= requestLimit) {
-        timeoutDuration = (requestTimestamps[(requestLimit - 1)] + 12000) - currentTime;
+        timeoutDuration = (requestTimestamps[(requestLimit - 1)] + TWELVE_SECONDS) - currentTime;
 
         return setTimeout(function() {
             return get(requestUrl, callback);
         }, timeoutDuration);
     }
     if(requestCount >= requestLimit){
-        timeoutDuration = latestTimeout - currentTime + 12000;
+        timeoutDuration = latestTimeout - currentTime + TWELVE_SECONDS;
         timeoutCount++;
         return setTimeout(function onTimeout(){
             requestTimestamps.splice(0, 1);
@@ -36,17 +37,11 @@ exports.get = function get(requestUrl, callback) {
 
     requestCount++;
     requestTimestamps.push(currentTime);
-    return processRequest(requestUrl, function onRequestData(err, data){
-        if(err) return callback(err);
-        return callback(null, data);
-    });
+    return processRequest(requestUrl, callback);
 };
 
 exports.static = function getStaticData(requestUrl, callback){
-    return processRequest(requestUrl, function onRequestData(err, data){
-        if(err) return callback(err);
-        return callback(null, data);
-    });
+    return processRequest(requestUrl, callback);
 };
 
 function processRequest(requestUrl, callback){

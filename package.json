@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mlequain/riot-api.git"
+    "url": "git+https://github.com/mlequain/riot-api-client.git"
   },
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"
@@ -17,14 +17,18 @@
     "wrapper",
     "riot",
     "api",
-    "nodejs"
+    "nodejs",
+    "league of legends",
+    "lol",
+    "league",
+    "riot api"
   ],
   "author": "Maxime Lequain",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mlequain/riot-api/issues"
+    "url": "https://github.com/mlequain/riot-api-client/issues"
   },
-  "homepage": "https://github.com/mlequain/riot-api#readme",
+  "homepage": "https://github.com/mlequain/riot-api-client#readme",
   "dependencies": {
     "request": "^2.63.0"
   }
