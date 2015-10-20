@@ -61,7 +61,7 @@ function processRequest(requestUrl, callback){
         uri: requestUrl + 'api_key=' + apiKey
     }, function onData(err, response, body){
         if(err) return callback(err);
-        if(response.statusCode !== 200) return callback(new Error({statusCode: response.statusCode}));
+        if(response.statusCode !== 200) return callback(new Error('Status code ' + response.statusCode));
         var json = tryParse(body);
         return callback(null, json);
     });
