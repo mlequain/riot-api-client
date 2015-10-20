@@ -8,19 +8,29 @@ var requestCount = 0;
 var timeoutCount = 0;
 var requestTimestamps = [];
 
-exports.get = function get(requestUrl, callback) {
+module.exports = function init(config){
+    apiKey = config.apiKey;
+    requestLimit = config.requestLimit;
+    return {
+        get: get,
+        static: getStaticData,
+        setConfig: setConfig
+    }
+};
+
+function get(requestUrl, callback){
     var currentTime = new Date().getTime();
     var latestTimeout = requestTimestamps[timeoutCount];
     var timeoutDuration = 0;
 
-    if (currentTime > (latestTimeout + TWELVE_SECONDS) && requestCount >= requestLimit && timeoutCount < requestLimit){
+    if(currentTime > (latestTimeout + TWELVE_SECONDS) && requestCount >= requestLimit && timeoutCount < requestLimit){
         requestCount--;
         requestTimestamps.splice(timeoutCount, (timeoutCount + 1));
     }
-    if (requestCount >= requestLimit && timeoutCount >= requestLimit) {
+    if(requestCount >= requestLimit && timeoutCount >= requestLimit){
         timeoutDuration = (requestTimestamps[(requestLimit - 1)] + TWELVE_SECONDS) - currentTime;
 
-        return setTimeout(function() {
+        return setTimeout(function(){
             return get(requestUrl, callback);
         }, timeoutDuration);
     }
@@ -38,37 +48,29 @@ exports.get = function get(requestUrl, callback) {
     requestCount++;
     requestTimestamps.push(currentTime);
     return processRequest(requestUrl, callback);
-};
+}
 
-exports.static = function getStaticData(requestUrl, callback){
+function getStaticData(requestUrl, callback){
     return processRequest(requestUrl, callback);
-};
+}
 
 function processRequest(requestUrl, callback){
     requestUrl += requestUrl.split('?')[1] ? '&' : '?';
     return request({
         method: 'GET',
         uri: requestUrl + 'api_key=' + apiKey
-    }, function onData(err, response, body) {
+    }, function onData(err, response, body){
         if(err) return callback(err);
-        if(response.statusCode !== 200) return callback(new Error({ statusCode: response.statusCode}));
+        if(response.statusCode !== 200) return callback(new Error({statusCode: response.statusCode}));
         var json = tryParse(body);
         return callback(null, json);
     });
 }
 
-exports.init = function init(config){
-    return function onInit(done){
-        apiKey = config.apiKey;
-        requestLimit = config.requestLimit;
-        return done();
-    };
-};
-
-exports.setConfig = function setConfig(config){
+function setConfig(config){
     apiKey = config.apiKey;
     requestLimit = config.requestLimit;
-};
+}
 
 function tryParse(obj){
     try{
