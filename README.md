@@ -7,6 +7,7 @@ Riot's API requires an API Key. More information about how to get a key and the 
 
 ## Getting started
 riot-api-client is a simple wrapper that will help your manage your request limit while executing your queries.
+
 The callback always takes two parameters, an error and the data received. The error contains the status code of the failed request if there was any issue with the request and the data contains the parsed JSON that has been received.
 
 ```javascript
