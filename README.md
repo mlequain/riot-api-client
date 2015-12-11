@@ -1,3 +1,4 @@
+[![npm version](https://badge.fury.io/js/riot-api-client.svg)](https://badge.fury.io/js/riot-api-client)
 # riot-api-client
 
 Riot Games API library
